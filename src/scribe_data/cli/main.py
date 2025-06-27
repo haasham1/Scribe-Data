@@ -4,6 +4,7 @@ Setup and commands for the Scribe-Data command line interface.
 """
 
 #!/usr/bin/env python3
+import utils.session
 import argparse
 from pathlib import Path
 
