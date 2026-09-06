@@ -45,8 +45,8 @@ graph LR
     WD ---> |dump download| DLWD
     WK ---> |dump download| DLWK
 
-    DLWD ---> |Saved locally| WDDUMP
-    DLWK ---> |Saved locally| WKDUMP
+    DLWD --> |Saved locally| WDDUMP
+    DLWK --> |Saved locally| WKDUMP
 
     WD ---> |Wikidata SPARQL\nquery service| GET
     WDDUMP ---> |Wikidata\ndump parse| GET
