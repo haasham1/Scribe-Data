@@ -14,6 +14,9 @@ graph LR
     %% CLI
 
     DATA[[Scribe-Data CLI]]
+    LEXEME_QUERIES[Internal generated\nlexeme queries]
+    PROFANITY_QUERY[Internal template\nprofanity query]
+    TOTAL_QUERY[Internal template\ntotal query]
 
     %% Data sources
 
@@ -42,22 +45,23 @@ graph LR
 
     %% General flow
 
-    WD ---> |dump download| DLWD
-    WK ---> |dump download| DLWK
+    WD ---> |Download| DLWD
+    WK ---> |Download| DLWK
 
-    DLWD --> |Saved locally| WDDUMP
-    DLWK --> |Saved locally| WKDUMP
+    DLWD ---> |Save locally| WDDUMP
+    DLWK ---> |Save locally| WKDUMP
 
-    WD ---> |Wikidata SPARQL\nquery service| GET
-    WDDUMP ---> |Wikidata\ndump parse| GET
-    WKDUMP ---> |Wiktionary\ndump parse| GET
+    WD ---> |Wikidata SPARQL\nquery service| LEXEME_QUERIES
+    WD ---> |Wikidata SPARQL\nquery service| PROFANITY_QUERY
+    WDDUMP ---> |parse\nWikidata dump| GET
+    WKDUMP ---> |parse\nWiktionary dump| GET
 
-    WD ---> |Wikidata SPARQL\nquery service| TOT
-    WDDUMP ---> |Wikidata\ndump parse| TOT
-    WKDUMP ---> |Wiktionary\ndump parse| TOT
+    WD ---> |Wikidata SPARQL\nquery service| TOTAL_QUERY
+    WDDUMP ---> |parse\nWikidata dump| TOT
+    WKDUMP ---> |parse\nWiktionary dump| TOT
 
-    GET ---> |Saved locally| JSON
-    JSON ---> |user wants\ndifferent format| CONVERT_FLOW
+    GET ---> |Save locally| JSON
+    JSON ---> |Need different format| CONVERT_FLOW
 
     LIST ---> |Print output| TERM
     TOT ---> |Print output| TERM
@@ -71,19 +75,21 @@ graph LR
 
     subgraph GET_FLOW [get flow]
     UNI ---> |Derive emojis\nfrom included files| GET
+    LEXEME_QUERIES ---> |Run queries| GET
+    PROFANITY_QUERY ---> |Run query| GET
     end
 
     subgraph CONVERT_FLOW [convert flow]
-    CONV ---> |Local files converted| CTSV
-    CONV ---> |Local files converted| SQLITE
+    CONV ---> |Convert local files| CTSV
+    CONV ---> |Convert local files| SQLITE
     end
 
     subgraph TOTAL_FLOW [total flow]
-    TOT
+    TOTAL_QUERY ---> |Run query| TOT
     end
 
     subgraph LIST_FLOW [list flow]
-    DATA ---> |CLI internal\ndata read| LIST
+    DATA ---> |Read CLI\ninternal data| LIST
     end
 ```
 
