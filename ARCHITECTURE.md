@@ -21,6 +21,7 @@ graph LR
     %% Data sources
 
     WD[(Wikidata lexemes)]
+    WDQS{{Wikidata Query Service}}
     WK[(Wiktionary translations)]
     UNI((Unicode emojis))
 
@@ -51,14 +52,16 @@ graph LR
     DLWD ---> |Save locally| WDDUMP
     DLWK ---> |Save locally| WKDUMP
 
-    WD ---> |Wikidata SPARQL\nquery service| LEXEME_QUERIES
-    WD ---> |Wikidata SPARQL\nquery service| PROFANITY_QUERY
-    WDDUMP ---> |parse\nWikidata dump| GET
-    WKDUMP ---> |parse\nWiktionary dump| GET
+    WD ---> |Return SPARQL request| WDQS
 
-    WD ---> |Wikidata SPARQL\nquery service| TOTAL_QUERY
-    WDDUMP ---> |parse\nWikidata dump| TOT
-    WKDUMP ---> |parse\nWiktionary dump| TOT
+    WDQS ---> |Run\nSPARQL queries| LEXEME_QUERIES
+    WDQS ---> |Run\nSPARQL query| PROFANITY_QUERY
+    WDDUMP ---> |Parse\nWikidata dump| GET
+    WKDUMP ---> |Parse\nWiktionary dump| GET
+
+    WDQS ---> |Run\nSPARQL query| TOTAL_QUERY
+    WDDUMP ---> |Parse\nWikidata dump| TOT
+    WKDUMP ---> |Parse\nWiktionary dump| TOT
 
     GET ---> |Save locally| JSON
     JSON ---> |Need different format| CONVERT_FLOW
@@ -75,8 +78,8 @@ graph LR
 
     subgraph GET_FLOW [get flow]
     UNI ---> |Derive emojis\nfrom included files| GET
-    LEXEME_QUERIES ---> |Run queries| GET
-    PROFANITY_QUERY ---> |Run query| GET
+    LEXEME_QUERIES ---> |Return\nquery response| GET
+    PROFANITY_QUERY ---> |Return\nquery response| GET
     end
 
     subgraph CONVERT_FLOW [convert flow]
@@ -85,7 +88,7 @@ graph LR
     end
 
     subgraph TOTAL_FLOW [total flow]
-    TOTAL_QUERY ---> |Run query| TOT
+    TOTAL_QUERY ---> |Return\nquery response| TOT
     end
 
     subgraph LIST_FLOW [list flow]
