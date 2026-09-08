@@ -23,14 +23,14 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - The handling of missing language directories in the SQLite conversion process has been dramatically improved to communicate to the user which languages are missing and also alert them that no SQLite databases will be created if no data is available for any of the desired languages.
 
-### 📝 Documentation
-
-- The [architecture diagram](./ARCHITECTURE.md) was updated to include the data contracts flow (`export_contracts`, `check_contracts` and `filter_data`).
-
 ### ✅ Tests
 
 - Testing for various parts of the CLI was expanded ([#623](https://github.com/scribe-org/Scribe-Data/issues/623)).
 - Local pre-commit hooks are now ran with [prek](https://prek.j178.dev/) instead of `pre-commit`.
+
+### 📝 Documentation
+
+- An [architecture diagram](./ARCHITECTURE.md) was created to detail the various functionalities of the CLI ([#712](https://github.com/scribe-org/Scribe-Data/issues/712)).
 
 ### ♻️ Code Refactoring
 
