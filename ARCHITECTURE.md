@@ -1,6 +1,6 @@
 # [Architecture](https://github.com/scribe-org/Scribe-Data/blob/main/ARCHITECTURE.md)
 
-This markdown file documents the architecture for the Scribe-Data CLI - including all processes and the external systems and sources with which it interacts. The diagram details the CLI [convert](./src/scribe_data/cli/convert/), [download](./src/scribe_data/cli/download/), [get](./src/scribe_data/cli/get.py), [list](./src/scribe_data/cli/list/) and [total](./src/scribe_data/cli/total/) commands, with [interactive](./src/scribe_data/cli/interactive/) being a command itself and also an option within other commands via the `--interactive` (`-i`) option.
+This markdown file documents the architecture for the Scribe-Data CLI - including all processes and the external systems and sources with which it interacts. The diagram details the CLI [convert](./src/scribe_data/cli/convert/), [download](./src/scribe_data/cli/download/), [get](./src/scribe_data/cli/get.py), [list](./src/scribe_data/cli/list/), [total](./src/scribe_data/cli/total/), [export_contracts, check_contracts and filter_data](./src/scribe_data/cli/contracts/) commands, with [interactive](./src/scribe_data/cli/interactive/) being a command itself and also an option within other commands via the `--interactive` (`-i`) option.
 
 CLI outputs that are used in multiple flows appear as nodes outside of any nodes for clarity. As the file is meant to be a living document, edits are welcome to expand and update it!
 
@@ -43,6 +43,15 @@ graph LR
     TOT{{total command}}
     CONV{{convert command}}
     INT{{interactive mode}}
+    EXPORTC{{export_contracts command}}
+    CHECKC{{check_contracts command}}
+    FILTERC{{filter_data command}}
+
+    %% Data contracts
+
+    CONTRACTS[(Data contract files)]
+    CDIR(Local contracts directory)
+    FILTJSON(Filtered JSON files)
 
     %% General flow
 
@@ -69,6 +78,15 @@ graph LR
     LIST ---> |Print output| TERM
     TOT ---> |Print output| TERM
 
+    CONTRACTS ---> |Copy bundled files| EXPORTC
+    EXPORTC ---> |Save locally| CDIR
+    CDIR ---> |Read contract rules| CHECKC
+    JSON ---> |Verify completeness| CHECKC
+    CHECKC ---> |Print output| TERM
+    CDIR ---> |Read contract rules| FILTERC
+    JSON ---> |Filter to contract scope| FILTERC
+    FILTERC ---> |Save locally| FILTJSON
+
     %% Subgraphs
 
     subgraph DOWNLOAD_FLOW [download flow]
@@ -93,6 +111,14 @@ graph LR
 
     subgraph LIST_FLOW [list flow]
     DATA ---> |Read CLI\ninternal data| LIST
+    end
+
+    subgraph CONTRACTS_FLOW [data contracts flow]
+    CONTRACTS
+    EXPORTC
+    CHECKC
+    FILTERC
+    CDIR
     end
 ```
 
